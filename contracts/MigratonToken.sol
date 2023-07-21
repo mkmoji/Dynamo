@@ -86,7 +86,6 @@ contract MigrationToken is ERC20, ERC20Burnable, Ownable {
         transfer(participant, _reward);
     }
 
-    //
     function provide_token(uint256 _eventnum, address[] memory participants) public govOnly() {
         Event memory newEvent = EventList[msg.sender][_eventnum];
         require(newEvent._reward >= 0, "event is not defined");
@@ -116,11 +115,11 @@ contract MigrationToken is ERC20, ERC20Burnable, Ownable {
         return address(this).balance;
     }
 
-    function checkAccount() view public returns(bool) {
-      if (GovernmentList[msg.sender] == 0) {
-        return true;
+    function checkAccount(address acc) view public returns(bool,address) {
+      if (GovernmentList[acc] == 0) {
+        return (true,acc);
       }else {
-        return false;
+        return (false, acc);
       }
     }
 }
