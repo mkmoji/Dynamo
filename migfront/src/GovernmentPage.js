@@ -33,14 +33,14 @@ function GovernmentPage ({ account }) {
         instance.methods.EventRegister(eventName, parseInt(reward,10)).send({from:account}).then((resolve) => {
             alert("イベント登録が完了しました");
         }).catch((err) => {
-            alert("不味いですよ！ニョロトノ");
+            alert("入力が不正");
         });
     });
     const provide = ((e) => {
         instance.methods.provide_token(Number(eventId), participants).send({from:account}).then((resolve) => {
             alert("トークン配布が完了しました");
         }).catch(() => {
-            alert("イキスギィ！！");
+            alert("入力が不正");
         });
     });
     const goods_ope = ((e) => {
