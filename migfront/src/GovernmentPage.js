@@ -53,11 +53,15 @@ function GovernmentPage ({ account }) {
     });
     const token_request = ((e) => {
         e.preventDefault();
-        instance.methods.request(to,amount).send({from:account}).then((resolve) => {
-            alert('完了');
-        }).catch(() => {
-            alert('入力が不正です');
-        });
+        if (amount<100 || amount%100!=0) {
+            alert('入力が不正です1');
+        }else {
+            instance.methods.request(to,amount).send({from:account, value:amount/100*10**18}).then((resolve) => {
+                alert('完了');
+            }).catch(() => {
+                alert('入力が不正です');
+            });
+        }
     });
     const token_retrieve = ((e) => {
         e.preventDefault();
@@ -69,10 +73,10 @@ function GovernmentPage ({ account }) {
     });
     const accept = ((e) => {
         e.preventDefault();
-        instance.methods.accept(address).send({from:account}).then((resoleve) => {
+        instance.methods.accept(from).send({from:account}).then((resoleve) => {
             alert('受諾完了');
         }).catch((err) => {
-            alert('失敗');
+            alert(err);
         });
     });
 
@@ -105,7 +109,7 @@ function GovernmentPage ({ account }) {
             <option value="true">登録</option>
             <option value="false">削除</option>
             </select>
-            <br></br><input typy="text" placeholder="特産品の名前" value={goodsname} onChange={(e)=>{setGoodsname(e.target.value);}}/>
+            <br></br><input type="text" placeholder="特産品の名前" value={goodsname} onChange={(e)=>{setGoodsname(e.target.value);}}/>
             <br></br>{selectedOption=='true' ? (<input type="number" placeholder="報酬" value={price} onChange={(e)=>{setPrice(e.target.value);}}/>):('')}
             <button type="button" onClick={goods_ope}>追加</button>
         </div>
@@ -113,18 +117,18 @@ function GovernmentPage ({ account }) {
             <h2>自治体間連携</h2>
             <div>
                 <h3>トークン購入</h3>
-                <input typy="text" placeholder="自治体を選択" value={to} onChange={(e)=>{setTo(e.target.velue);}}/>
-                <input type="number" step='100' placeholder="希望トークン量を入力" value={amount} onChange={(e)=>{setAmount(e.target.velue);}}/>
+                <input type="text" placeholder="自治体を選択" value={to} onChange={(e)=>{setTo(e.target.value);}}/>
+                <input type="number" step='100' placeholder="希望トークン量を入力" value={amount} onChange={(e)=>{setAmount(e.target.value);}}/>
                 <button type='button' onClick={token_request}>送信</button>
             </div>
             <div>
                 <h3>購入取り消し</h3>
-                <input type="text" placeholder="自治体を選択" value={to} onChange={(e)=>{setTo(e.target.velue);}}/>
+                <input type="text" placeholder="自治体を選択" value={to} onChange={(e)=>{setAddress(e.target.value);}}/>
                 <button type='button' onClick={token_retrieve}>送信</button>
             </div>
             <div>
                 <h3>依頼受理</h3>
-                <input typy="text" placeholder="自治体を選択" value={from} onChange={(e)=>{setFrom(e.target.velue);}}/>
+                <input type="text" placeholder="自治体を選択" value={from} onChange={(e)=>{setFrom(e.target.value);}}/>
                 <button type='button' onClick={accept}>送信</button>
             </div>
         </div>
