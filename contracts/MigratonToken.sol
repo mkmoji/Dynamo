@@ -51,25 +51,27 @@ contract MigrationToken is ERC20, ERC20Burnable, Ownable {
         uint256 tmp = amount / 100;
         uint256 time = block.timestamp;
         require(msg.value >= tmp*(1 ether),"not sufficient value");
-        RentList[msg.sender][to] = msg.value;
+        RentList[msg.sender][to] = amount;
         ExpireTime[msg.sender][to] = time;
     }
     //トークン購入を希望した自治体からトークンが送られてこない場合に，トークン購入希望を取り消し
     function retrieve(address to) public govOnly() {
-        require(ExpireTime[msg.sender][to] >= 7 days, "time is leagal");
+        require(ExpireTime[msg.sender][to] >= 7 days, "time is ileagal");
         uint256 Balance = RentList[msg.sender][to];
-        payable(msg.sender).transfer(Balance);
+        payable(msg.sender).transfer(Balance/100*10**18);
         RentList[msg.sender][to] = 0;
         ExpireTime[msg.sender][to] = 0;
     }
     //他自治体から来たトークン購入希望を受諾
     function accept(address from) public govOnly() {
-        uint256 tmp = RentList[from][msg.sender];
-        require(tmp != 0,"request is not found");
-        require(balanceOf(msg.sender) >= tmp, "STRANGE");
-        transfer(from, tmp);
+        uint256 amount = RentList[from][msg.sender];
+        uint256 Eth = amount/100*10**18;
+        require(amount != 0,"request is not found");
+        require(balanceOf(msg.sender) >= amount, "STRANGE");
+        transfer(from, amount);
         RentList[from][msg.sender] = 0;
         ExpireTime[from][msg.sender] = 0;
+        payable(msg.sender).transfer(Eth);
     }
 
     //イベント登録
